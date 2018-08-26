@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <!-- <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" /> -->
 
   <PropertyGroup>
     <SrcRoot>$(MSBuildThisFileDirectory)</SrcRoot>
@@ -26,7 +26,7 @@
   <PropertyGroup Label="Common Properties">
     <OutputType Condition="$(OutputType)==''">Library</OutputType>
     <RootNamespace Condition="$(RootNamespace)=='' AND $(AssemblyName)!=''">$(AssemblyName)</RootNamespace>
-    <TargetFrameworkVersion Condition="$(TargetFrameworkVersion)==''">v4.6</TargetFrameworkVersion>
+    <!-- <TargetFrameworkVersion Condition="$(TargetFrameworkVersion)==''">v4.6</TargetFrameworkVersion> -->
     <Deterministic>True</Deterministic>
     <SignAssembly Condition="'$(SignAssembly)' == ''">false</SignAssembly>
     <DefineConstants Condition="'$(SignAssembly)' == 'true'">$(DefineConstants);SIGN;</DefineConstants>

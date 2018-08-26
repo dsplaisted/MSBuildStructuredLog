@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyName>StructuredLogger</AssemblyName>
     <RootNamespace>Microsoft.Build.Logging.StructuredLogger</RootNamespace>
-    <TargetFrameworks>net46;netstandard1.5</TargetFrameworks>
+    <TargetFrameworks>net46;netstandard1.5;netcoreapp3.0</TargetFrameworks>
     <NBGV_DoNotEmitNonVersionCustomAttributes>true</NBGV_DoNotEmitNonVersionCustomAttributes>
     <DebugType>embedded</DebugType>
     <LangVersion>latest</LangVersion>
@@ -28,7 +28,7 @@
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.5'">
     <DefineConstants>$(DefineConstants);NETCORE</DefineConstants>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.5' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.5' Or ('$(TargetFramework)' == 'netcoreapp3.0') ">
     <PackageReference Include="Microsoft.Build" Version="15.1.1012" />
     <PackageReference Include="Microsoft.Build.Framework" Version="15.1.1012" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.1.1012" />

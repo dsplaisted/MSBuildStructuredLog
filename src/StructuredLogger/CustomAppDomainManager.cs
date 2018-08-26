@@ -1,4 +1,4 @@
-﻿#if !NETCORE
+﻿#if !NETCORE && !NETCOREAPP
 
 using System;
 using System.Linq;
