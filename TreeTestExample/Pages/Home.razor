@@ -33,11 +33,40 @@
 
         void OnExpand(TreeExpandEventArgs args)
         {
-            var directory = args.Value as string;
+            try
+            {
+                var directory = args.Value as string;
 
-            args.Children.Data = ((TreeNode) args.Value).Children;
-            args.Children.Text = GetTextForNode;
-            args.Children.HasChildren = (Object obj) => ((TreeNode)args.Value).HasChildren;
+
+                if (args.Value is TreeNode)
+                {
+                    var treeNode = (TreeNode)args.Value;
+                    args.Children.Data = ((TreeNode)args.Value).Children;
+                    args.Children.Text = GetTextForNode;
+                    args.Children.HasChildren = (Object obj) =>
+                    {
+                        try
+                        {
+                            if (args.Value is TreeNode)
+                            {
+                                return ((TreeNode)args.Value).HasChildren;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw;
+                        }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async System.Threading.Tasks.Task ClearFile()
