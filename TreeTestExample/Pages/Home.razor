@@ -22,7 +22,7 @@
     </center>
 
 
-<h1>@test</h1>
+<h1>@loadTimeText</h1>
 <br />
 <br />
 @if (binLogSelected)
@@ -41,9 +41,9 @@
 @code {
     bool binLogSelected = false;
     ElementReference inputElement;
-    static string test;
     bool reading;
     string waitText;
+    string loadTimeText = "";
 
     IEnumerable<BaseNode> entries = null;
 
@@ -167,7 +167,7 @@
         reading = true;
         this.StateHasChanged();
         waitText = "Here we go...";
-        await System.Threading.Tasks.Task.Delay(2000);
+        //await System.Threading.Tasks.Task.Delay(2000);
         var files = (await fileReaderService.CreateReference(inputElement).EnumerateFilesAsync());
         foreach (Blazor.FileReader.IFileReference file in files)
         {
@@ -181,29 +181,36 @@
             }
             waitText = "Still reading...";
             this.StateHasChanged();
-            await System.Threading.Tasks.Task.Delay(2000);
-            binLogSelected = true;
-            Task<Blazor.FileReader.AsyncDisposableStream>
-            streamTask = file.OpenReadAsync();
-            var stream = await streamTask;
-            var memoryStream = new MemoryStream();
-            await System.Threading.Tasks.Task.Delay(2000);
-            waitText = "Teaching you patience...";
-            this.StateHasChanged();
-            await stream.CopyToAsync(memoryStream);
+            //await System.Threading.Tasks.Task.Delay(2000);
 
-            memoryStream.Position = 0;
+            async Task<Build> ReadBuildAsync(Blazor.FileReader.IFileReference fileReference)
+            {
+                var stream = await file.OpenReadAsync();
+                var memoryStream = new MemoryStream((int)stream.Length);
+                await stream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                Build build = Serialization.ReadBinLog(memoryStream);
+                return build;
+            }
 
-            Build build = Serialization.ReadBinLog(memoryStream);
-            waitText = "Trust me you're computer wants this to be over more than you do...";
-            this.StateHasChanged();
-            await System.Threading.Tasks.Task.Delay(2000);
-            BuildAnalyzer.AnalyzeBuild(build);
-            await System.Threading.Tasks.Task.Delay(2000);
-            waitText = "Not a joke...We're actually still reading...";
-            this.StateHasChanged();
-            await System.Threading.Tasks.Task.Delay(4000);
+            var readBuildTask = System.Threading.Tasks.Task.Run(() => ReadBuildAsync(file));
+
+            int second = 0;
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+            do
+            {
+                waitText = second.ToString();
+                this.StateHasChanged();
+                second++;
+            }
+            while (await System.Threading.Tasks.Task.WhenAny(readBuildTask, System.Threading.Tasks.Task.Delay(1000)) != readBuildTask);
+
+            Build build = await readBuildTask;
+            loadTimeText = $"Loaded in {sw.Elapsed.TotalSeconds} seconds";
+
             entries = (IEnumerable<BaseNode>)build.Children;
+            binLogSelected = true;
             splitDescription();
         }
         this.StateHasChanged();
