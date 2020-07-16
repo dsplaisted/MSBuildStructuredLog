@@ -5,26 +5,35 @@
 
 <button @onclick=Exit class="btn btn-primary">Close</button>
 
-<MonacoEditor>
-    @text
-</MonacoEditor>
+<MonacoEditor @ref="_editor" Id="monaco-editor" ConstructionOptions="EditorConstructionOptions"/>
 
 @code {
-        [CascadingParameter]
-        public SplitPane ContainerSplit { get; set; }
-        string text;
+    private MonacoEditor _editor { get; set; }
 
-        public void Render()
-        {
-            this.StateHasChanged();
-        }
+    [CascadingParameter]
+    public SplitPane ContainerSplit { get; set; }
+    string text;
 
-        public async System.Threading.Tasks.Task Exit()
+    public void Render()
+    {
+        this.StateHasChanged();
+    }
+
+    public async System.Threading.Tasks.Task Exit()
+    {
+        ContainerSplit.show += 1;
+        ContainerSplit.Render();
+    }
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions()
         {
-            ContainerSplit.show += 1;
-            ContainerSplit.Render();
-        }
-            
+            Value = text
+        };
+    }
+    
+
 
     protected override async System.Threading.Tasks.Task OnAfterRenderAsync(bool firstRender)
     {
@@ -67,6 +76,9 @@
         {
             text = "No file to display";
         }
+
+        //await _editor.SetValue(text);
+        //this.StateHasChanged();
         //}
     }
 
